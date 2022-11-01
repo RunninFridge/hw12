@@ -87,7 +87,7 @@ const viewDepartments = () => {
     displayPrompts();
 }
 
-//Adding employee
+//Adding new employee
 const addEmployee = () => {
     connection.query('SELECT * FROM title', (err,titles) => {
         if(err) throw err;
@@ -122,10 +122,12 @@ const addEmployee = () => {
             ])
             .then((data) => {
                 connection.query('INSERT INTO employee SET',
-                {first_name: data.firstName, 
-                last_name: data.lastName,
-                role_id: data.role, 
-                manager_id: data.managerID},
+                {
+                    first_name: data.firstName, 
+                    last_name: data.lastName,
+                    role_id: data.role, 
+                    manager_id: data.managerID
+                },
                  (err) => {
                     if (err) throw err;
                     displayPrompts();
@@ -133,3 +135,46 @@ const addEmployee = () => {
             });
         });
     };
+
+//Adding new role
+const addEmployeeRole = () => {
+    connection.query('SELECT * FROM department', (err, departments) => {
+        if(err) throw err;
+        departments = departments.map((department) => {
+            return {
+                name: department.name,
+                value: department.id,
+            };
+        });
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'newRole',
+                    message: 'Please enter name of the new role',
+                },
+                {
+                    type: 'input',
+                    name: 'newSalary',
+                    message: 'Please endter salary for the new role',
+                },
+                {
+                    type: 'list',
+                    name: 'departmentID',
+                    message: 'Please select department of the new role',
+                    choices: departments,
+                },
+            ])
+            .then((data) => {
+                connection.query('INSERT INTO role SET',
+                {
+                    title: data.newRole,
+                    salary: data.newSalary,
+                    department_id: data.departmentID,
+                }, function (err){
+                    if (err) throw err;
+                });
+            });
+        });
+    };
+
