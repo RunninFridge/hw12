@@ -56,7 +56,7 @@ function displayPrompts() {
             viewDepartments();
             break;
         case 'Add Departments':
-            addDepartments;
+            addDepartment();
             break;
     };
 }
@@ -130,8 +130,8 @@ const addEmployee = () => {
                 },
                  (err) => {
                     if (err) throw err;
-                    displayPrompts();
                 });
+            displayPrompts();
             });
         });
     };
@@ -174,7 +174,37 @@ const addEmployeeRole = () => {
                 }, function (err){
                     if (err) throw err;
                 });
+            displayPrompts();
             });
         });
     };
 
+//Adding new department
+const addDepartment = () => {
+    connection.query('SELECT * FROM department', (err, departments) => {
+        if(err) throw err;
+        departments = departments.map((department) => {
+            return {
+                name: department.name,
+                value: department.id,
+            };
+        });
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    name: 'newDepartment',
+                    message: 'Please enter name of the new Department',
+                },
+            ])
+            .then((data) => {
+                connection.query('INSERT INTO department SET',
+                {
+                    name: data.newDepartment,
+                }, function (err){
+                    if (err) throw err;
+                });
+            displayPrompts();
+            });
+        });
+    };
