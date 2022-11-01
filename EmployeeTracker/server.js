@@ -98,7 +98,7 @@ const addEmployee = () => {
             };
         });
         inquirer
-            .prompt([
+        .prompt([
                 {
                     type: 'input',
                     name: 'firstName',
@@ -119,22 +119,22 @@ const addEmployee = () => {
                     name: 'managerID',
                     message: 'Please select the manager ID'
                 },
-            ])
-            .then((data) => {
-                connection.query('INSERT INTO employee SET',
-                {
-                    first_name: data.firstName, 
-                    last_name: data.lastName,
-                    role_id: data.role, 
-                    manager_id: data.managerID
-                },
-                 (err) => {
-                    if (err) throw err;
+                ])
+                .then((data) => {
+                    connection.query('INSERT INTO employee SET',
+                    {
+                        first_name: data.firstName, 
+                        last_name: data.lastName,
+                        role_id: data.role, 
+                        manager_id: data.managerID
+                    },
+                    (err) => {
+                        if (err) throw err;
+                    });
+                displayPrompts();
                 });
-            displayPrompts();
             });
-        });
-    };
+        };
 
 //Adding new role
 const addEmployeeRole = () => {
@@ -147,7 +147,7 @@ const addEmployeeRole = () => {
             };
         });
         inquirer
-            .prompt([
+        .prompt([
                 {
                     type: 'input',
                     name: 'newRole',
@@ -164,20 +164,20 @@ const addEmployeeRole = () => {
                     message: 'Please select department of the new role',
                     choices: departments,
                 },
-            ])
-            .then((data) => {
-                connection.query('INSERT INTO role SET',
-                {
-                    title: data.newRole,
-                    salary: data.newSalary,
-                    department_id: data.departmentID,
-                }, function (err){
-                    if (err) throw err;
+                ])
+                .then((data) => {
+                    connection.query('INSERT INTO role SET',
+                    {
+                        title: data.newRole,
+                        salary: data.newSalary,
+                        department_id: data.departmentID,
+                    }, function (err){
+                        if (err) throw err;
+                    });
+                displayPrompts();
                 });
-            displayPrompts();
             });
-        });
-    };
+        };
 
 //Adding new department
 const addDepartment = () => {
@@ -190,24 +190,24 @@ const addDepartment = () => {
             };
         });
         inquirer
-            .prompt([
+        .prompt([
                 {
                     type: 'input',
                     name: 'newDepartment',
                     message: 'Please enter name of the new Department',
                 },
-            ])
-            .then((data) => {
-                connection.query('INSERT INTO department SET',
-                {
-                    name: data.newDepartment,
-                }, function (err){
-                    if (err) throw err;
+                ])
+                .then((data) => {
+                    connection.query('INSERT INTO department SET',
+                    {
+                        name: data.newDepartment,
+                    }, function (err){
+                        if (err) throw err;
+                    });
+                displayPrompts();
                 });
-            displayPrompts();
             });
-        });
-    };
+        };
 
 //Updating employee role
 const updateEmployeeRole = () => {
@@ -227,33 +227,34 @@ const updateEmployeeRole = () => {
                     value: role.id,
                 };
             });
-            inquirer.prompt([
-                {
-                    type: 'list',
-                    name: 'employeeSelection',
-                    message: 'Select an employee to update',
-                    choices: employees,
-                },
-                {
-                    type: 'list',
-                    name: 'roleSelection',
-                    message: 'Select a role to update',
-                    choices: roles,
-                },
-            ]).then((data) => {
-                connection.query('UPDATE employee SET ? WHERE ?',
-                [
+            inquirer
+            .prompt([
                     {
-                    id: data.employeeSelection,
+                        type: 'list',
+                        name: 'employeeSelection',
+                        message: 'Select an employee to update',
+                        choices: employees,
                     },
                     {
-                    role_id: data.roleSelection,
-                    }
-                ], function(err){
-                    if(err) throw err;
+                        type: 'list',
+                        name: 'roleSelection',
+                        message: 'Select a role to update',
+                        choices: roles,
+                    },
+                    ]).then((data) => {
+                        connection.query('UPDATE employee SET ? WHERE ?',
+                        [
+                            {
+                            id: data.employeeSelection,
+                            },
+                            {
+                            role_id: data.roleSelection,
+                            }
+                        ], function(err){
+                            if(err) throw err;
+                        });
+                    displayPrompts();
+                    });
                 });
-            displayPrompts();
             });
-        });
-    });
-};
+        };
