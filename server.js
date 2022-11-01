@@ -208,3 +208,52 @@ const addDepartment = () => {
             });
         });
     };
+
+//Updating employee role
+const updateEmployeeRole = () => {
+    connection.query('SELECT * FROM employee', (err, employees) => {
+        if(err) throw err;
+        employees = employees.map((employee) => {
+            return {
+                name: `${employee.first_name}, ${employee.last_name}`,
+                value: employee.id,
+            };
+        });
+        connection.query('SELECT * FROM role', (err, roles) => {
+            if(err) throw err;
+            roles = roles.map((role) => {
+                return {
+                    name: role.title,
+                    value: role.id,
+                };
+            });
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employeeSelection',
+                    message: 'Select an employee to update',
+                    choices: employees,
+                },
+                {
+                    type: 'list',
+                    name: 'roleSelection',
+                    message: 'Select a role to update',
+                    choices: roles,
+                },
+            ]).then((data) => {
+                connection.query('UPDATE employee SET ? WHERE ?',
+                [
+                    {
+                    id: data.employeeSelection,
+                    },
+                    {
+                    role_id: data.roleSelection,
+                    }
+                ], function(err){
+                    if(err) throw err;
+                });
+            displayPrompts();
+            });
+        });
+    });
+};
